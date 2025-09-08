@@ -19,6 +19,9 @@ public class ManualRoomManager : MonoBehaviour
     [Header("Room Configuration")]
     public List<Room> rooms = new List<Room>();
 
+    [Header("Camera Settings")]
+    public Camera mainCamera; // Single camera that moves between rooms
+
     [Header("Current State")]
     public int currentRoomIndex = 0;
 
@@ -34,11 +37,19 @@ public class ManualRoomManager : MonoBehaviour
         // Find all room buttons
         roomButtons = FindObjectsOfType<ManualRoomButton>();
         
+        // Setup camera
+        SetupCamera();
+        
         // Initialize the first room
         if (rooms.Count > 0)
         {
             SetRoomActive(0);
         }
+    }
+    
+    private void SetupCamera()
+    {
+        // Camera must be assigned in inspector
     }
 
     public void GoLeft()
@@ -113,11 +124,24 @@ public class ManualRoomManager : MonoBehaviour
                 rooms[i].roomObject.SetActive(shouldBeActive);
             }
             
-            // Activate/deactivate room camera
+            // Deactivate all room cameras (we use the main camera instead)
             if (rooms[i].roomCamera != null)
             {
-                rooms[i].roomCamera.gameObject.SetActive(shouldBeActive);
+                rooms[i].roomCamera.gameObject.SetActive(false);
             }
+        }
+        
+        // Move main camera to match the active room's camera position
+        if (mainCamera != null && rooms[roomIndex].roomCamera != null)
+        {
+            Transform roomCameraTransform = rooms[roomIndex].roomCamera.transform;
+            mainCamera.transform.position = roomCameraTransform.position;
+            mainCamera.transform.rotation = roomCameraTransform.rotation;
+            
+            // Copy camera settings
+            mainCamera.fieldOfView = rooms[roomIndex].roomCamera.fieldOfView;
+            mainCamera.nearClipPlane = rooms[roomIndex].roomCamera.nearClipPlane;
+            mainCamera.farClipPlane = rooms[roomIndex].roomCamera.farClipPlane;
         }
     }
 
@@ -195,6 +219,18 @@ public class ManualRoomManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    // Method to manually set the camera
+    public void SetCamera(Camera camera)
+    {
+        mainCamera = camera;
+    }
+    
+    // Method to get the current camera
+    public Camera GetCurrentCamera()
+    {
+        return mainCamera;
     }
 
     // Validation
