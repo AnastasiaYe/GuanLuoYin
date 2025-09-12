@@ -18,18 +18,8 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     
     private void Start()
     {
-        // If no snap point specified, use this transform
-        if (snapPoint == null)
-        {
-            snapPoint = transform;
-        }
-        
-        // Setup visual feedback
-        if (slotImage == null)
-        {
-            slotImage = GetComponent<Image>();
-        }
-        
+        snapPoint ??= transform;
+        slotImage ??= GetComponent<Image>();
         UpdateVisualState();
     }
     
@@ -40,14 +30,14 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         var draggedToken = eventData.pointerDrag?.GetComponent<ClueToken>();
         if (draggedToken == null) return;
         
-        // Check if the clue matches this slot
         if (draggedToken.clueId == expectedClueId)
         {
             SnapToken(draggedToken);
         }
         else
         {
-            draggedToken.ReturnToOriginalPosition();
+            draggedToken.AddBackToScrollContent();
+            draggedToken.SetDraggable(true);
         }
     }
     
@@ -56,12 +46,9 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         isFilled = true;
         currentToken = token;
         
-        // Move token to snap point
-        token.transform.SetParent(snapPoint);
-        token.transform.localPosition = Vector3.zero;
+        token.transform.SetParent(snapPoint, false);
+        token.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         token.transform.localScale = Vector3.one;
-        
-        // Disable dragging for this token
         token.SetDraggable(false);
         
         UpdateVisualState();
@@ -71,9 +58,8 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     {
         if (currentToken != null)
         {
-            // Re-enable dragging
             currentToken.SetDraggable(true);
-            currentToken.ReturnToOriginalPosition();
+            currentToken.AddBackToScrollContent();
             currentToken = null;
         }
         
@@ -83,10 +69,7 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     
     private void UpdateVisualState()
     {
-        if (slotImage != null)
-        {
-            slotImage.color = isFilled ? filledColor : emptyColor;
-        }
+        slotImage.color = isFilled ? filledColor : emptyColor;
     }
     
     public bool IsFilled()
@@ -99,3 +82,4 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         return expectedClueId;
     }
 }
+

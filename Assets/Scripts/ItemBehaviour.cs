@@ -44,14 +44,7 @@ public class ItemBehaviour : MonoBehaviour
     
     private void HandleInteraction()
     {
-        Debug.Log($"Interacted with item: {itemName}");
-        
-        // Check if this item has a clue giver
-        var clueGiver = GetComponent<ClueGiver>();
-        if (clueGiver != null)
-        {
-            clueGiver.GrantClue();
-        }
+        GetComponent<ClueGiver>()?.GrantClue();
     }
     
     // Public method to get item info

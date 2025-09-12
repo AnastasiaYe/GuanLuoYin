@@ -6,6 +6,10 @@ public class ClueGiver : MonoBehaviour
     public string clueId;
     public bool openNotebookOnGrant = true;
     
+    [Header("Multiple Clues")]
+    public bool givesMultipleClues = false;
+    public string[] clueIds = new string[0];
+    
     [Header("Visual Feedback")]
     public GameObject visualFeedback; // Optional visual effect when clue is granted
     
@@ -15,10 +19,6 @@ public class ClueGiver : MonoBehaviour
     private void Start()
     {
         clueManager = FindObjectOfType<ClueManager>();
-        if (clueManager == null)
-        {
-            Debug.LogWarning($"ClueGiver on {gameObject.name}: No ClueManager found in scene");
-        }
     }
     
     /// <summary>
@@ -26,16 +26,37 @@ public class ClueGiver : MonoBehaviour
     /// </summary>
     public void GrantClue()
     {
-        if (hasGrantedClue || clueManager == null || string.IsNullOrEmpty(clueId))
+        if (hasGrantedClue || clueManager == null) return;
+        
+        if (givesMultipleClues)
         {
-            return;
+            bool grantedAny = false;
+            foreach (string id in clueIds)
+            {
+                if (!string.IsNullOrEmpty(id))
+                {
+                    clueManager.GrantClue(id, false);
+                    grantedAny = true;
+                }
+            }
+            
+            if (grantedAny)
+            {
+                hasGrantedClue = true;
+                if (openNotebookOnGrant)
+                {
+                    FindObjectOfType<NotebookController>()?.OpenNotebook();
+                }
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(clueId)) return;
+            
+            clueManager.GrantClue(clueId, openNotebookOnGrant);
+            hasGrantedClue = true;
         }
         
-        // Grant the clue
-        clueManager.GrantClue(clueId, openNotebookOnGrant);
-        hasGrantedClue = true;
-        
-        // Show visual feedback
         if (visualFeedback != null)
         {
             visualFeedback.SetActive(true);
@@ -58,5 +79,16 @@ public class ClueGiver : MonoBehaviour
     public void SetClueId(string newClueId)
     {
         clueId = newClueId;
+        givesMultipleClues = false;
+    }
+    
+    /// <summary>
+    /// Set multiple clue IDs
+    /// </summary>
+    /// <param name="newClueIds">Array of clue IDs to set</param>
+    public void SetClueIds(string[] newClueIds)
+    {
+        clueIds = newClueIds;
+        givesMultipleClues = true;
     }
 }

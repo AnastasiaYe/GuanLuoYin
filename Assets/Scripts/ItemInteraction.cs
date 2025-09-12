@@ -38,18 +38,13 @@ public class ItemInteraction : MonoBehaviour
         // Find all colliders at the mouse position
         Collider2D[] colliders = Physics2D.OverlapPointAll(worldPos2D, interactableLayer);
         
-        // Check each collider for ItemBehaviour
         foreach (Collider2D collider in colliders)
         {
-            if (collider != null)
+            var itemBehaviour = collider?.GetComponent<ItemBehaviour>();
+            if (itemBehaviour != null)
             {
-                ItemBehaviour itemBehaviour = collider.GetComponent<ItemBehaviour>();
-                if (itemBehaviour != null)
-                {
-                    Debug.Log($"Hit item: {collider.gameObject.name}");
-                    itemBehaviour.OnInteract();
-                    return;
-                }
+                itemBehaviour.OnInteract();
+                return;
             }
         }
     }

@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
 public class ClueManager : MonoBehaviour
 {
     [Header("UI References")]
-    public Transform clueScrollContent;
+    public RectTransform clueScrollContent;
     public GameObject clueTokenPrefab;
     
     [Header("Clue Database")]
@@ -26,6 +27,23 @@ public class ClueManager : MonoBehaviour
         {
             clueDatabase[clue.id] = clue;
         }
+        
+        // Validate scroll content setup
+        ValidateScrollContent();
+    }
+    
+    private void ValidateScrollContent()
+    {
+        if (clueScrollContent == null)
+        {
+            Debug.LogError("ClueManager: clueScrollContent is not assigned!");
+            return;
+        }
+        
+        if (clueScrollContent.GetComponentInParent<ScrollRect>() == null)
+        {
+            Debug.LogError("ClueManager: clueScrollContent should be inside a ScrollRect!");
+        }
     }
     
     /// <summary>
@@ -35,37 +53,17 @@ public class ClueManager : MonoBehaviour
     /// <param name="openNotebook">Whether to open the notebook after granting</param>
     public void GrantClue(string clueId, bool openNotebook = false)
     {
-        if (string.IsNullOrEmpty(clueId))
-        {
-            Debug.LogWarning("ClueManager: Clue ID cannot be null or empty");
+        if (string.IsNullOrEmpty(clueId) || earnedClues.ContainsKey(clueId) || !clueDatabase.TryGetValue(clueId, out ClueData clue))
             return;
-        }
         
-        // Check if clue already earned
-        if (earnedClues.ContainsKey(clueId))
-        {
-            return; // Already earned, silently ignore
-        }
-        
-        // Check if clue exists in database
-        if (!clueDatabase.TryGetValue(clueId, out ClueData clue))
-        {
-            Debug.LogWarning($"ClueManager: Clue '{clueId}' not found in database");
-            return;
-        }
-        
-        // Mark clue as earned and create token
         clue.isEarned = true;
         CreateClueToken(clue);
+        OnClueEarned?.Invoke(clueId);
         
-        // Open notebook if requested
         if (openNotebook)
         {
-            var notebook = FindObjectOfType<NotebookController>();
-            notebook?.OpenNotebook();
+            FindObjectOfType<NotebookController>()?.OpenNotebook();
         }
-        
-        OnClueEarned?.Invoke(clueId);
     }
     
     /// <summary>
@@ -99,24 +97,19 @@ public class ClueManager : MonoBehaviour
     
     private void CreateClueToken(ClueData clue)
     {
-        if (clueTokenPrefab == null || clueScrollContent == null)
-        {
-            Debug.LogWarning("ClueManager: ClueTokenPrefab or ClueScrollContent not assigned");
-            return;
-        }
+        if (clueTokenPrefab == null || clueScrollContent == null) return;
         
-        // Create new clue token
+        SetupScrollViewLayout();
+        
         GameObject tokenObj = Instantiate(clueTokenPrefab, clueScrollContent);
         ClueToken token = tokenObj.GetComponent<ClueToken>();
         
         if (token == null)
         {
-            Debug.LogWarning("ClueManager: ClueTokenPrefab must have a ClueToken component");
             Destroy(tokenObj);
             return;
         }
         
-        // Setup and store the token
         token.SetupClue(clue.id, clue.title, clue.description, clue.icon);
         earnedClues[clue.id] = token;
     }
@@ -153,6 +146,33 @@ public class ClueManager : MonoBehaviour
                 token.SetDraggable(true);
             }
         }
+    }
+    
+    /// <summary>
+    /// Setup ScrollView layout components for proper vertical scrolling
+    /// </summary>
+    private void SetupScrollViewLayout()
+    {
+        // Set RectTransform anchor to top for proper scrolling (preserve original width)
+        RectTransform contentRect = clueScrollContent.GetComponent<RectTransform>();
+        if (contentRect != null)
+        {
+            // Only set vertical anchors, preserve horizontal positioning
+            contentRect.anchorMin = new Vector2(contentRect.anchorMin.x, 1);
+            contentRect.anchorMax = new Vector2(contentRect.anchorMax.x, 1);
+            contentRect.pivot = new Vector2(contentRect.pivot.x, 1);
+        }
+        
+        var layoutGroup = clueScrollContent.GetComponent<VerticalLayoutGroup>() ?? clueScrollContent.gameObject.AddComponent<VerticalLayoutGroup>();
+        layoutGroup.spacing = 10f;
+        layoutGroup.childForceExpandWidth = false;
+        layoutGroup.childForceExpandHeight = false;
+        layoutGroup.childControlWidth = false;
+        layoutGroup.childControlHeight = false;
+        layoutGroup.padding = new RectOffset(10, 10, 10, 10);
+        
+        var sizeFitter = clueScrollContent.GetComponent<ContentSizeFitter>() ?? clueScrollContent.gameObject.AddComponent<ContentSizeFitter>();
+        sizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
     
     /// <summary>

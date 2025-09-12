@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 
 public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -13,6 +14,7 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     [Header("UI References")]
     public Image iconImage;
     public TextMeshProUGUI titleText;
+    public TextMeshProUGUI descriptionText;
     
     private RectTransform rectTransform;
     private Canvas canvas;
@@ -20,17 +22,16 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private Vector3 originalPosition;
     private Transform originalParent;
     private bool isDraggable = true;
+    private ClueManager clueManager;
     
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
+        clueManager = FindObjectOfType<ClueManager>();
         
-        if (canvas == null)
-        {
-            Debug.LogWarning($"ClueToken '{gameObject.name}': No Canvas found in parent hierarchy");
-        }
+        // Canvas will be found when needed during drag operations
     }
     
     public void SetupClue(string id, string title, string description, Sprite icon = null)
@@ -43,6 +44,11 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         if (titleText != null)
         {
             titleText.text = title;
+        }
+        
+        if (descriptionText != null)
+        {
+            descriptionText.text = description;
         }
         
         if (iconImage != null)
@@ -63,19 +69,12 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     {
         if (!isDraggable) return;
         
-        // Store original position and parent
         originalPosition = rectTransform.anchoredPosition;
         originalParent = rectTransform.parent;
-        
-        // Make token appear on top
         rectTransform.SetAsLastSibling();
         
-        // Visual feedback while dragging
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = 0.6f;
-            canvasGroup.blocksRaycasts = false;
-        }
+        canvasGroup.alpha = 0.6f;
+        canvasGroup.blocksRaycasts = false;
     }
     
     public void OnDrag(PointerEventData eventData)
@@ -94,49 +93,67 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
     
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (!isDraggable) return;
-        
-        // Restore visual state
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
-        }
-        
-        // Check for valid drop target
-        GameObject dropTarget = eventData.pointerCurrentRaycast.gameObject;
-        if (dropTarget != null)
-        {
-            ClueSlot slot = dropTarget.GetComponent<ClueSlot>();
-            if (slot != null)
-            {
-                return; // Let the slot handle the drop
-            }
-        }
-        
-        // No valid drop target, return to original position
-        ReturnToOriginalPosition();
-    }
+     public void OnEndDrag(PointerEventData eventData)
+     {
+         if (!isDraggable) return;
+         
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+         
+         // Check for valid drop target
+         GameObject dropTarget = eventData.pointerCurrentRaycast.gameObject;
+         if (dropTarget != null)
+         {
+             ClueSlot slot = dropTarget.GetComponent<ClueSlot>();
+             if (slot != null)
+             {
+                 // Let the slot handle the drop logic
+                 return;
+             }
+         }
+         
+        // No valid drop target, add back to scrollable content
+        AddBackToScrollContent();
+        SetDraggable(true);
+     }
     
     public void ReturnToOriginalPosition()
     {
-        // Return to original parent and position
-        rectTransform.SetParent(originalParent);
-        rectTransform.anchoredPosition = originalPosition;
-        rectTransform.SetAsFirstSibling(); // Put back in original order
+        if (originalParent != null)
+        {
+            rectTransform.SetParent(originalParent, false);
+            rectTransform.anchoredPosition = originalPosition;
+            rectTransform.SetAsLastSibling();
+        }
+    }
+    
+    public void AddBackToScrollContent()
+    {
+        if (clueManager?.clueScrollContent != null)
+        {
+            rectTransform.SetParent(clueManager.clueScrollContent, false);
+            rectTransform.SetAsLastSibling();
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.localScale = Vector3.one;
+            StartCoroutine(ForceLayoutUpdate());
+        }
+        else
+        {
+            ReturnToOriginalPosition();
+        }
+    }
+    
+    private IEnumerator ForceLayoutUpdate()
+    {
+        yield return null;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(clueManager.clueScrollContent);
     }
     
     public void SetDraggable(bool draggable)
     {
         isDraggable = draggable;
         
-        // Update visual feedback
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = draggable ? 1f : 0.8f;
-        }
+        canvasGroup.alpha = draggable ? 1f : 0.8f;
     }
     
     public bool IsDraggable()
