@@ -13,7 +13,10 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     public Image slotImage;
     public Color emptyColor = Color.white;
     public Color filledColor = Color.green;
-    
+
+    public AudioClip interactionSound;
+    private AudioSource audioSource;
+
     private ClueToken currentToken;
     
     private void Start()
@@ -21,6 +24,13 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         snapPoint ??= transform;
         slotImage ??= GetComponent<Image>();
         UpdateVisualState();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
     }
     
     public void OnDrop(PointerEventData eventData)
@@ -29,10 +39,14 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         
         var draggedToken = eventData.pointerDrag?.GetComponent<ClueToken>();
         if (draggedToken == null) return;
-        
+
         if (draggedToken.clueId == expectedClueId)
         {
             SnapToken(draggedToken);
+            if (interactionSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(interactionSound);
+            }
         }
         else
         {

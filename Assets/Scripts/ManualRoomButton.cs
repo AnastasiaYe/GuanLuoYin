@@ -26,6 +26,9 @@ public class ManualRoomButton : MonoBehaviour
     private ManualRoomManager roomManager;
     private bool isLocked = false;
 
+    public AudioClip interactionSound;
+    private AudioSource audioSource;
+
     private void Start()
     {
         // Get ManualRoomManager reference
@@ -50,6 +53,13 @@ public class ManualRoomButton : MonoBehaviour
         {
             buttonText.text = direction.ToString();
         }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
 
         // Update button state
         UpdateButtonState();
@@ -76,6 +86,10 @@ public class ManualRoomButton : MonoBehaviour
         else
         {
             roomManager.GoRight();
+        }
+        if (interactionSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(interactionSound);
         }
     }
 

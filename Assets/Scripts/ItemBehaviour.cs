@@ -14,7 +14,10 @@ public class ItemBehaviour : MonoBehaviour
     
     // Events
     public System.Action<ItemBehaviour> OnItemInteracted;
-    
+
+    public AudioClip interactionSound;
+    private AudioSource audioSource;
+
     private void Start()
     {
         // Set item name to GameObject name if not set
@@ -22,24 +25,36 @@ public class ItemBehaviour : MonoBehaviour
         {
             itemName = gameObject.name;
         }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
     }
-    
+
     public void OnInteract()
     {
         // Check if item is interactable
         if (!isInteractable) return;
-        
+
         // Check cooldown
         if (Time.time - lastInteractionTime < interactionCooldown) return;
-        
+
         // Update last interaction time
         lastInteractionTime = Time.time;
-        
+
         // Handle interaction
         HandleInteraction();
-        
+
         // Trigger event
         OnItemInteracted?.Invoke(this);
+
+        if (interactionSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(interactionSound);
+        }
     }
     
     private void HandleInteraction()
