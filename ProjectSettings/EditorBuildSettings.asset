@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Anastasia.unity
     guid: e82ffd1321856f84fb5adfbb7f8ca6b6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Scarlet.unity
     guid: dbc3f1d4d1a107047bab109c38735afd
   m_configObjects:

@@ -60,10 +60,33 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         isFilled = true;
         currentToken = token;
         
+        // Clean up any temporary drag canvas before snapping
+        Canvas dragCanvas = token.GetComponent<Canvas>();
+        if (dragCanvas != null && dragCanvas.overrideSorting)
+        {
+            DestroyImmediate(dragCanvas);
+        }
+        
+        // Move token to slot and make it permanent
         token.transform.SetParent(snapPoint, false);
         token.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         token.transform.localScale = Vector3.one;
         token.SetDraggable(false);
+        
+        // Ensure the token stays visible in the slot
+        CanvasGroup tokenCanvasGroup = token.GetComponent<CanvasGroup>();
+        if (tokenCanvasGroup != null)
+        {
+            tokenCanvasGroup.alpha = 1f;
+            tokenCanvasGroup.blocksRaycasts = false; // Don't block raycasts since it's not draggable
+        }
+        
+        // Remove from ClueManager's earned clues list since it's now permanently placed
+        ClueManager clueManager = FindObjectOfType<ClueManager>();
+        if (clueManager != null)
+        {
+            clueManager.RemoveClueToken(token.clueId);
+        }
         
         UpdateVisualState();
     }
@@ -72,8 +95,31 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     {
         if (currentToken != null)
         {
+            // Clean up any temporary drag canvas before moving
+            Canvas dragCanvas = currentToken.GetComponent<Canvas>();
+            if (dragCanvas != null && dragCanvas.overrideSorting)
+            {
+                DestroyImmediate(dragCanvas);
+            }
+            
+            // Re-enable dragging and restore raycast blocking
+            CanvasGroup tokenCanvasGroup = currentToken.GetComponent<CanvasGroup>();
+            if (tokenCanvasGroup != null)
+            {
+                tokenCanvasGroup.blocksRaycasts = true;
+            }
+            
             currentToken.SetDraggable(true);
             currentToken.AddBackToScrollContent();
+            
+            // Re-add to ClueManager's earned clues list
+            ClueManager clueManager = FindObjectOfType<ClueManager>();
+            if (clueManager != null)
+            {
+                // Re-create the token in the scroll area
+                clueManager.GrantClue(currentToken.clueId, false);
+            }
+            
             currentToken = null;
         }
         
@@ -94,6 +140,24 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     public string GetExpectedClueId()
     {
         return expectedClueId;
+    }
+    
+    /// <summary>
+    /// Get the current token in this slot
+    /// </summary>
+    /// <returns>ClueToken if slot is filled, null otherwise</returns>
+    public ClueToken GetCurrentToken()
+    {
+        return currentToken;
+    }
+    
+    /// <summary>
+    /// Check if this slot has the correct clue placed
+    /// </summary>
+    /// <returns>True if filled with correct clue, false otherwise</returns>
+    public bool HasCorrectClue()
+    {
+        return isFilled && currentToken != null && currentToken.clueId == expectedClueId;
     }
 }
 

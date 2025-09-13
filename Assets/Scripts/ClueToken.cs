@@ -69,10 +69,37 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     {
         if (!isDraggable) return;
         
+        // Store original state
         originalPosition = rectTransform.anchoredPosition;
         originalParent = rectTransform.parent;
-        rectTransform.SetAsLastSibling();
         
+        // Move to top-level canvas to ensure it's above everything
+        Canvas topCanvas = GetTopCanvas();
+        if (topCanvas != null)
+        {
+            rectTransform.SetParent(topCanvas.transform, false);
+            // Ensure it's at the very top of the hierarchy
+            rectTransform.SetAsLastSibling();
+            
+            // Set a high sorting order to ensure it's above other UI elements
+            Canvas dragCanvas = rectTransform.GetComponent<Canvas>();
+            if (dragCanvas == null)
+            {
+                dragCanvas = rectTransform.gameObject.AddComponent<Canvas>();
+                dragCanvas.overrideSorting = true;
+            }
+            else if (!dragCanvas.overrideSorting)
+            {
+                dragCanvas.overrideSorting = true;
+            }
+            dragCanvas.sortingOrder = 1000; // Very high sorting order
+        }
+        else
+        {
+            rectTransform.SetAsLastSibling();
+        }
+        
+        // Visual feedback
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
     }
@@ -81,10 +108,14 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     {
         if (!isDraggable) return;
         
+        // Get the current canvas (might be the top canvas now)
+        Canvas currentCanvas = rectTransform.GetComponentInParent<Canvas>();
+        if (currentCanvas == null) currentCanvas = canvas;
+        
         // Convert screen position to world position within canvas
         Vector3 worldPosition;
         if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            canvas.transform as RectTransform,
+            currentCanvas.transform as RectTransform,
             eventData.position,
             eventData.pressEventCamera,
             out worldPosition))
@@ -96,6 +127,13 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
      public void OnEndDrag(PointerEventData eventData)
      {
          if (!isDraggable) return;
+         
+        // Clean up drag canvas
+        Canvas dragCanvas = rectTransform.GetComponent<Canvas>();
+        if (dragCanvas != null && dragCanvas.overrideSorting)
+        {
+            DestroyImmediate(dragCanvas);
+        }
          
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
@@ -119,6 +157,13 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     
     public void ReturnToOriginalPosition()
     {
+        // Clean up any temporary drag canvas
+        Canvas dragCanvas = rectTransform.GetComponent<Canvas>();
+        if (dragCanvas != null && dragCanvas.overrideSorting)
+        {
+            DestroyImmediate(dragCanvas);
+        }
+        
         if (originalParent != null)
         {
             rectTransform.SetParent(originalParent, false);
@@ -127,8 +172,33 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
     
+    /// <summary>
+    /// Find the top-level canvas in the hierarchy
+    /// </summary>
+    private Canvas GetTopCanvas()
+    {
+        Canvas currentCanvas = canvas;
+        Canvas topCanvas = currentCanvas;
+        
+        // Walk up the hierarchy to find the root canvas
+        while (currentCanvas != null)
+        {
+            topCanvas = currentCanvas;
+            currentCanvas = currentCanvas.transform.parent?.GetComponent<Canvas>();
+        }
+        
+        return topCanvas;
+    }
+    
     public void AddBackToScrollContent()
     {
+        // Clean up any temporary drag canvas
+        Canvas dragCanvas = rectTransform.GetComponent<Canvas>();
+        if (dragCanvas != null && dragCanvas.overrideSorting)
+        {
+            DestroyImmediate(dragCanvas);
+        }
+        
         if (clueManager?.clueScrollContent != null)
         {
             rectTransform.SetParent(clueManager.clueScrollContent, false);
@@ -137,7 +207,7 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             rectTransform.localScale = Vector3.one;
             StartCoroutine(ForceLayoutUpdate());
         }
-        else
+        else if (originalParent != null)
         {
             ReturnToOriginalPosition();
         }

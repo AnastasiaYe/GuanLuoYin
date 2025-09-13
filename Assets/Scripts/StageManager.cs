@@ -12,6 +12,7 @@ public class StageManager : MonoBehaviour
     
     // Events
     public System.Action<int> OnStageChanged;
+    public System.Action OnStageCycleCompleted; // Triggered when completing stage 4 -> 0
     
     // Singleton pattern for easy access
     private static StageManager _instance;
@@ -44,7 +45,7 @@ public class StageManager : MonoBehaviour
     
     private void Update()
     {
-        if (enableAutoStageChange)
+        if (enableAutoStageChange && !IsCutscenePlaying())
         {
             timer += Time.deltaTime;
             
@@ -61,7 +62,17 @@ public class StageManager : MonoBehaviour
     public void ChangeToNextStage()
     {
         int nextStage = (currentStage + 1) % 5; // 0->1->2->3->4->0
+        
+        // Check if we're completing a full cycle (stage 4 -> stage 0)
+        bool isCompletingCycle = (currentStage == 4 && nextStage == 0);
+        
         ChangeStage(nextStage);
+        
+        // Trigger cycle completion event if we just completed a full cycle
+        if (isCompletingCycle)
+        {
+            OnStageCycleCompleted?.Invoke();
+        }
     }
     
     public void ChangeStage(int newStage)
@@ -77,6 +88,36 @@ public class StageManager : MonoBehaviour
     public void SetStage(int stage)
     {
         ChangeStage(stage);
+    }
+    
+    /// <summary>
+    /// Temporarily pause auto stage changes (useful during cutscenes or special events)
+    /// </summary>
+    public void PauseAutoStageChange()
+    {
+        enableAutoStageChange = false;
+    }
+    
+    /// <summary>
+    /// Resume auto stage changes
+    /// </summary>
+    public void ResumeAutoStageChange()
+    {
+        enableAutoStageChange = true;
+        timer = 0f; // Reset timer when resuming
+    }
+    
+    /// <summary>
+    /// Check if a cutscene is currently playing
+    /// </summary>
+    /// <returns>True if cutscene is active, false otherwise</returns>
+    private bool IsCutscenePlaying()
+    {
+        if (CutsceneManager.Instance != null)
+        {
+            return CutsceneManager.Instance.IsCutsceneActive();
+        }
+        return false;
     }
     
     #endregion
