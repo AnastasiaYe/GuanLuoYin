@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class ClueSlot : MonoBehaviour, IDropHandler
 {
     [Header("Slot Settings")]
+    [Tooltip("Expected clue ID or title (system will try both)")]
     public string expectedClueId;
     public Transform snapPoint; // Optional snap point for the clue token
     public bool isFilled = false;
@@ -40,7 +41,8 @@ public class ClueSlot : MonoBehaviour, IDropHandler
         var draggedToken = eventData.pointerDrag?.GetComponent<ClueToken>();
         if (draggedToken == null) return;
 
-        if (draggedToken.clueId == expectedClueId)
+        // Check if the dropped clue matches this slot (by ID or title)
+        if (IsCorrectClue(draggedToken))
         {
             SnapToken(draggedToken);
             if (interactionSound != null && audioSource != null)
@@ -53,6 +55,41 @@ public class ClueSlot : MonoBehaviour, IDropHandler
             draggedToken.AddBackToScrollContent();
             draggedToken.SetDraggable(true);
         }
+    }
+    
+    /// <summary>
+    /// Check if the given token matches this slot's expected clue
+    /// </summary>
+    /// <param name="token">The clue token to check</param>
+    /// <returns>True if the token matches this slot</returns>
+    private bool IsCorrectClue(ClueToken token)
+    {
+        if (string.IsNullOrEmpty(expectedClueId)) return false;
+        
+        // Check by ID first (exact match)
+        if (token.clueId == expectedClueId)
+        {
+            return true;
+        }
+        
+        // Check by title (exact match)
+        if (token.clueTitle == expectedClueId)
+        {
+            return true;
+        }
+        
+        // Check by effective ID (handles auto-generated IDs)
+        ClueManager clueManager = FindObjectOfType<ClueManager>();
+        if (clueManager != null)
+        {
+            ClueData expectedClue = clueManager.GetClueByTitle(expectedClueId);
+            if (expectedClue != null && token.clueId == expectedClue.GetEffectiveId())
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     private void SnapToken(ClueToken token)
@@ -157,7 +194,47 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     /// <returns>True if filled with correct clue, false otherwise</returns>
     public bool HasCorrectClue()
     {
-        return isFilled && currentToken != null && currentToken.clueId == expectedClueId;
+        return isFilled && currentToken != null && IsCorrectClue(currentToken);
+    }
+    
+    /// <summary>
+    /// Debug method to check what clue this slot expects
+    /// </summary>
+    [ContextMenu("Debug Expected Clue")]
+    private void DebugExpectedClue()
+    {
+        if (string.IsNullOrEmpty(expectedClueId))
+        {
+            Debug.Log($"ClueSlot '{name}': No expected clue set");
+            return;
+        }
+        
+        ClueManager clueManager = FindObjectOfType<ClueManager>();
+        if (clueManager == null)
+        {
+            Debug.LogWarning($"ClueSlot '{name}': ClueManager not found!");
+            return;
+        }
+        
+        // Try to find the clue by title first
+        ClueData clue = clueManager.GetClueByTitle(expectedClueId);
+        if (clue != null)
+        {
+            Debug.Log($"ClueSlot '{name}': Expects clue by title '{expectedClueId}' -> Found: '{clue.title}' (ID: {clue.GetEffectiveId()})");
+        }
+        else
+        {
+            // Try by ID
+            clue = clueManager.GetClue(expectedClueId);
+            if (clue != null)
+            {
+                Debug.Log($"ClueSlot '{name}': Expects clue by ID '{expectedClueId}' -> Found: '{clue.title}' (ID: {clue.GetEffectiveId()})");
+            }
+            else
+            {
+                Debug.LogWarning($"ClueSlot '{name}': No clue found for '{expectedClueId}' (tried both title and ID)");
+            }
+        }
     }
 }
 

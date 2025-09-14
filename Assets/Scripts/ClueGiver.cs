@@ -35,7 +35,16 @@ public class ClueGiver : MonoBehaviour
             {
                 if (!string.IsNullOrEmpty(id))
                 {
-                    clueManager.GrantClue(id, false);
+                    // Try to grant by title first, then by ID
+                    ClueData clue = clueManager.GetClueByTitle(id);
+                    if (clue != null)
+                    {
+                        clueManager.GrantClueByTitle(id, false);
+                    }
+                    else
+                    {
+                        clueManager.GrantClue(id, false);
+                    }
                     grantedAny = true;
                 }
             }
@@ -53,7 +62,16 @@ public class ClueGiver : MonoBehaviour
         {
             if (string.IsNullOrEmpty(clueId)) return;
             
-            clueManager.GrantClue(clueId, openNotebookOnGrant);
+            // Try to grant by title first, then by ID
+            ClueData clue = clueManager.GetClueByTitle(clueId);
+            if (clue != null)
+            {
+                clueManager.GrantClueByTitle(clueId, openNotebookOnGrant);
+            }
+            else
+            {
+                clueManager.GrantClue(clueId, openNotebookOnGrant);
+            }
             hasGrantedClue = true;
         }
         

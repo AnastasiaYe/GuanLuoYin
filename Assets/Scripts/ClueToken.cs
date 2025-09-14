@@ -15,6 +15,10 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public Image iconImage;
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI descriptionText;
+    public Image backgroundImage;
+    
+    // Public property for external access
+    public Image BackgroundImage => backgroundImage;
     
     private RectTransform rectTransform;
     private Canvas canvas;
@@ -31,10 +35,21 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         canvas = GetComponentInParent<Canvas>();
         clueManager = FindObjectOfType<ClueManager>();
         
+        // Auto-find background image if not assigned
+        if (backgroundImage == null)
+        {
+            backgroundImage = GetComponent<Image>();
+            if (backgroundImage == null)
+            {
+                // Look for an Image component in children
+                backgroundImage = GetComponentInChildren<Image>();
+            }
+        }
+        
         // Canvas will be found when needed during drag operations
     }
     
-    public void SetupClue(string id, string title, string description, Sprite icon = null)
+    public void SetupClue(string id, string title, string description, Sprite icon = null, ClueCategory category = ClueCategory.Object)
     {
         clueId = id;
         clueTitle = title;
@@ -49,6 +64,21 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         if (descriptionText != null)
         {
             descriptionText.text = description;
+        }
+        
+        
+        if (backgroundImage != null)
+        {
+            // Ensure the background image is enabled
+            backgroundImage.enabled = true;
+            backgroundImage.gameObject.SetActive(true);
+            
+            backgroundImage.color = ClueCategoryColors.GetBackgroundColor(category);
+            Debug.Log($"ClueToken: Applied background color {backgroundImage.color} to {title} (category: {category})");
+        }
+        else
+        {
+            Debug.LogWarning($"ClueToken: Background Image not assigned for clue '{title}' - colors won't show!");
         }
         
         if (iconImage != null)
@@ -229,5 +259,133 @@ public class ClueToken : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public bool IsDraggable()
     {
         return isDraggable;
+    }
+    
+    /// <summary>
+    /// Manually apply category colors (useful for debugging)
+    /// </summary>
+    /// <param name="category">The category to apply colors for</param>
+    public void ApplyCategoryColors(ClueCategory category)
+    {
+        if (backgroundImage != null)
+        {
+            // Ensure the background image is enabled
+            backgroundImage.enabled = true;
+            backgroundImage.gameObject.SetActive(true);
+            
+            backgroundImage.color = ClueCategoryColors.GetBackgroundColor(category);
+            Debug.Log($"ClueToken: Manually applied background color {backgroundImage.color} to {clueTitle} (category: {category})");
+        }
+        else
+        {
+            Debug.LogError($"ClueToken: Cannot apply colors - no background image found for {clueTitle}!");
+        }
+    }
+    
+    [ContextMenu("Test Apply Blue Color")]
+    public void TestApplyBlueColor()
+    {
+        ApplyCategoryColors(ClueCategory.Name);
+    }
+    
+    [ContextMenu("Test Apply Green Color")]
+    public void TestApplyGreenColor()
+    {
+        ApplyCategoryColors(ClueCategory.Location);
+    }
+    
+    [ContextMenu("Test Apply Orange Color")]
+    public void TestApplyOrangeColor()
+    {
+        ApplyCategoryColors(ClueCategory.Object);
+    }
+    
+    [ContextMenu("Force Find Background Image")]
+    public void ForceFindBackgroundImage()
+    {
+        Debug.Log($"ClueToken: Looking for background image on {clueTitle}...");
+        
+        if (backgroundImage == null)
+        {
+            Debug.Log("ClueToken: backgroundImage field is null, searching for Image component...");
+            
+            // Try to find Image component
+            Image foundImage = GetComponent<Image>();
+            if (foundImage != null)
+            {
+                backgroundImage = foundImage;
+                Debug.Log($"ClueToken: Found Image component: {foundImage.name}");
+            }
+            else
+            {
+                foundImage = GetComponentInChildren<Image>();
+                if (foundImage != null)
+                {
+                    backgroundImage = foundImage;
+                    Debug.Log($"ClueToken: Found Image component in children: {foundImage.name}");
+                }
+                else
+                {
+                    Debug.LogError($"ClueToken: No Image component found on {clueTitle} or its children!");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log($"ClueToken: Background image already assigned: {backgroundImage.name}");
+        }
+        
+        // Try to apply colors now
+        if (backgroundImage != null)
+        {
+            // Ensure the image is enabled
+            backgroundImage.enabled = true;
+            backgroundImage.gameObject.SetActive(true);
+            
+            Debug.Log($"ClueToken: Applying test color to {backgroundImage.name}");
+            backgroundImage.color = Color.red; // Test with red color
+            Debug.Log($"ClueToken: Applied red color. Current color: {backgroundImage.color}");
+            Debug.Log($"ClueToken: Image enabled: {backgroundImage.enabled}, GameObject active: {backgroundImage.gameObject.activeInHierarchy}");
+        }
+    }
+    
+    [ContextMenu("Re-enable Background Image")]
+    public void ReEnableBackgroundImage()
+    {
+        Debug.Log($"ClueToken: Re-enabling background image for {clueTitle}...");
+        
+        if (backgroundImage != null)
+        {
+            backgroundImage.enabled = true;
+            backgroundImage.gameObject.SetActive(true);
+            Debug.Log($"ClueToken: Background image re-enabled for {clueTitle}");
+        }
+        else
+        {
+            Debug.LogError($"ClueToken: No background image to re-enable for {clueTitle}!");
+        }
+    }
+    
+    /// <summary>
+    /// Force re-enable background image and reapply category colors
+    /// </summary>
+    public void ForceReEnableImageAndColors()
+    {
+        if (backgroundImage != null)
+        {
+            backgroundImage.enabled = true;
+            backgroundImage.gameObject.SetActive(true);
+            
+            // Get the category from ClueManager and reapply colors
+            if (clueManager != null)
+            {
+                ClueData clueData = clueManager.GetClue(clueId);
+                if (clueData != null)
+                {
+                    backgroundImage.color = ClueCategoryColors.GetBackgroundColor(clueData.category);
+                    Debug.Log($"ClueToken: Force re-enabled and reapplied color {backgroundImage.color} to {clueTitle}");
+                }
+            }
+        }
     }
 }
