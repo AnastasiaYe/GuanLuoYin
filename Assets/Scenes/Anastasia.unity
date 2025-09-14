@@ -4244,7 +4244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 534a94ccf71b9e24db94202ac3d00601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneManager
-  enableCutscenes: 0
+  enableCutscenes: 1
   cutsceneDuration: 5
   cutsceneCanvas: {fileID: 1920005502}
   backgroundImage: {fileID: 802361621}
