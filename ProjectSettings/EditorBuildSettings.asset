@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Scarlet.unity
     guid: dbc3f1d4d1a107047bab109c38735afd
   - enabled: 1
-    path: Assets/Scenes/End Scene Scarlet.unity
+    path: Assets/Scenes/End Scene.unity
     guid: f6969146a2f560242a68236d955f4142
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
