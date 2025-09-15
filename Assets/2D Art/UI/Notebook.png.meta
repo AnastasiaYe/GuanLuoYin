@@ -5,6 +5,15 @@ TextureImporter:
   - first:
       213: -8006958544109390896
     second: Notebook_0
+  - first:
+      213: 1830575749990603544
+    second: Notebook_1
+  - first:
+      213: 2939828048680797853
+    second: Notebook_2
+  - first:
+      213: 5122484485353991983
+    second: Notebook_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,10 +125,10 @@ TextureImporter:
       name: Notebook_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 54
-        width: 534
-        height: 611
+        x: 0
+        y: 0
+        width: 526
+        height: 552
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,11 +143,77 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Notebook_1
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 518
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81b52a022f2876910800000000000000
+      internalID: 1830575749990603544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Notebook_2
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 515
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d96495ec80e5cc820800000000000000
+      internalID: 2939828048680797853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Notebook_3
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2f69f4df78b61740800000000000000
+      internalID: 5122484485353991983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -149,6 +224,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       Notebook_0: -8006958544109390896
+      Notebook_1: 1830575749990603544
+      Notebook_2: 2939828048680797853
+      Notebook_3: 5122484485353991983
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

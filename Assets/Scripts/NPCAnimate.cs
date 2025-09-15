@@ -23,5 +23,6 @@ public class SimpleIdleAnimation : MonoBehaviour
             currentIndex = (currentIndex + 1) % idleSprites.Length;
             spriteRenderer.sprite = idleSprites[currentIndex];
         }
+        spriteRenderer.color = Color.white;
     }
 }

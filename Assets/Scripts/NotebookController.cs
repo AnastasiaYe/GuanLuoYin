@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class NotebookController : MonoBehaviour
 {
@@ -14,7 +15,10 @@ public class NotebookController : MonoBehaviour
         public string title;
         public string body;
         public Sprite icon;
-        
+
+        public AudioClip interactionSound;
+        private AudioSource audioSource;
+
         public Note(string id, string title, string body, Sprite icon = null)
         {
             this.id = id;
@@ -58,7 +62,11 @@ public class NotebookController : MonoBehaviour
     public System.Action<string> OnNoteSelected;
     public System.Action OnNotebookOpened;
     public System.Action OnNotebookClosed;
-    
+
+
+    public AudioClip interactionSound;
+    private AudioSource audioSource;
+
     private void Start()
     {
         // Setup toggle button
@@ -75,6 +83,13 @@ public class NotebookController : MonoBehaviour
         
         // Get keyboard reference for Input System
         keyboard = Keyboard.current;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
     }
     
     private void Update()
@@ -96,10 +111,18 @@ public class NotebookController : MonoBehaviour
         if (isOpen)
         {
             CloseNotebook();
+            if (interactionSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(interactionSound);
+            }
         }
         else
         {
             OpenNotebook();
+            if (interactionSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(interactionSound);
+            }
         }
     }
     
