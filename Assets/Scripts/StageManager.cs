@@ -13,9 +13,14 @@ public class StageManager : MonoBehaviour
     // Events
     public System.Action<int> OnStageChanged;
     public System.Action OnStageCycleCompleted; // Triggered when completing stage 4 -> 0
-    
+
+    public AudioClip interactionSound;
+    private AudioSource audioSource;
+
     // Singleton pattern for easy access
     private static StageManager _instance;
+
+    public GameCompletionManager gameCompletionManager;
     public static StageManager Instance
     {
         get
@@ -29,7 +34,17 @@ public class StageManager : MonoBehaviour
     }
     
     private float timer = 0f;
-    
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+    }
+
     private void Awake()
     {
         if (_instance == null)
@@ -52,6 +67,10 @@ public class StageManager : MonoBehaviour
             if (timer >= stageChangeInterval)
             {
                 ChangeToNextStage();
+                if (interactionSound != null && audioSource != null && !gameCompletionManager.gameCompleted)
+                {
+                    audioSource.PlayOneShot(interactionSound);
+                }
                 timer = 0f;
             }
         }

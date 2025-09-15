@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1570886870967985770}
   - component: {fileID: 8184158887810160819}
   - component: {fileID: 7565758281966382993}
+  - component: {fileID: 4773355333369259174}
   m_Layer: 5
   m_Name: Clue
   m_TagString: Untagged
@@ -108,10 +109,9 @@ MonoBehaviour:
   clueId: 
   clueTitle: 
   clueDescription: 
-  iconImage: {fileID: 0}
+  iconImage: {fileID: 7875544800987388444}
   titleText: {fileID: 9121996656464291562}
   descriptionText: {fileID: 0}
-  categoryText: {fileID: 0}
   backgroundImage: {fileID: 7875544800987388444}
 --- !u!225 &7565758281966382993
 CanvasGroup:
@@ -125,6 +125,23 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4773355333369259174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2249002259392477491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 429651a39a3f0b64b9bc0cd272b0cd1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite1: {fileID: 21300000, guid: 1d193f501f0f79a44b035b2007127ea7, type: 3}
+  sprite2: {fileID: 21300000, guid: 7bae39a9e35ff714e85399f254f35a29, type: 3}
+  sprite3: {fileID: 21300000, guid: f560a09a8ecbb6a488334d5aada662b1, type: 3}
+  sprite4: {fileID: 21300000, guid: 956dff7a3103fa74a9494c44d95501a4, type: 3}
+  img: {fileID: 7875544800987388444}
 --- !u!1 &7506542620405995713
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,8 +209,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Clue
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 06bc8abd8ec539a4d94d106b700b4b1d, type: 2}
+  m_sharedMaterial: {fileID: -1142610764469483193, guid: 06bc8abd8ec539a4d94d106b700b4b1d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -217,13 +234,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -326,7 +343,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 1d193f501f0f79a44b035b2007127ea7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

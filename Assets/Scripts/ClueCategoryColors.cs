@@ -1,20 +1,21 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [System.Serializable]
 public class ClueCategoryColorSettings
 {
     [Header("Background Colors")]
     [Tooltip("Background color for Name category clues")]
-    public Color nameBackgroundColor = new Color(0.3f, 0.3f, 1f, 0.8f);      // Light Blue background
+    public Color nameBackgroundColor = new Color(1f, 1f, 1f, 1f);      // Light Blue background
     
     [Tooltip("Background color for Location category clues")]
-    public Color locationBackgroundColor = new Color(0.3f, 1f, 0.3f, 0.8f);      // Light Green background
+    public Color locationBackgroundColor = new Color(0.99f, 0.99f, 0.99f, 1f);      // Light Green background
     
     [Tooltip("Background color for Object category clues")]
-    public Color objectBackgroundColor = new Color(1f, 1f, 0.3f, 0.8f);        // Light Yellow background
+    public Color objectBackgroundColor = new Color(0.98f, 0.98f, 0.98f, 1f);        // Light Yellow background
     
     [Tooltip("Background color for Action category clues")]
-    public Color actionBackgroundColor = new Color(1f, 0.3f, 1f, 0.8f);        // Light Magenta background
+    public Color actionBackgroundColor = new Color(0.97f, 0.97f, 0.97f, 1f);        // Light Magenta background
 }
 
 public static class ClueCategoryColors
@@ -57,18 +58,18 @@ public static class ClueCategoryColors
         switch (category)
         {
             case ClueCategory.Name:
-                return settings.nameBackgroundColor;
+                return new Color(1f, 1f, 1f, 1f);
             case ClueCategory.Location:
-                return settings.locationBackgroundColor;
+                return new Color(0.99f, 0.99f, 0.99f, 1f);
             case ClueCategory.Object:
-                return settings.objectBackgroundColor;
+                return new Color(0.98f, 0.98f, 0.98f, 1f);
             case ClueCategory.Action:
-                return settings.actionBackgroundColor;
+                return new Color(0.97f, 0.97f, 0.97f, 1f);
             default:
                 return new Color(1f, 1f, 1f, 0.5f);          // Light white background
         }
     }
-    
+
     /// <summary>
     /// Get the category name as a string
     /// </summary>

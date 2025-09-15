@@ -531,7 +531,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skipDelay: 11
   skipText: {fileID: 1967268208}
-  SkipSceneIndex: 3
+  SkipSceneIndex: 2
 --- !u!1 &717807553
 GameObject:
   m_ObjectHideFlags: 0

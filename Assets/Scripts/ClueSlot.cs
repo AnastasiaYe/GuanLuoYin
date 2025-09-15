@@ -32,9 +32,9 @@ public class ClueSlot : MonoBehaviour, IDropHandler
     [Tooltip("Enable custom colors (overrides default category colors)")]
     public bool useCustomColors = false;
     [Tooltip("Custom color for Name category")]
-    public Color customNameColor = new Color(0.3f, 0.3f, 1f, 1f);
+    public Color customNameColor = new Color(1f, 1f, 1f, 1f);
     [Tooltip("Custom color for Location category")]
-    public Color customLocationColor = new Color(0.3f, 1f, 0.3f, 1f);
+    public Color customLocationColor = new Color(0.99f, 0.99f, 0.99f, 1f);
     [Tooltip("Custom color for Object category")]
     public Color customObjectColor = new Color(1f, 1f, 0.3f, 1f);
     [Tooltip("Custom color for Action category")]
@@ -103,7 +103,7 @@ public class ClueSlot : MonoBehaviour, IDropHandler
             titleText = GetComponentInChildren<TextMeshProUGUI>();
         }
         
-        UpdateVisualState();
+        //UpdateVisualState();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)

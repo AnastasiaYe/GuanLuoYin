@@ -39,7 +39,7 @@ public class GameCompletionManager : MonoBehaviour
     public System.Action OnAllSlotsFilled;
     
     private List<ClueSlot> allSlots = new List<ClueSlot>();
-    private bool gameCompleted = false;
+    public bool gameCompleted = false;
     private bool slotsCacheValid = false;
     
     private void Awake()

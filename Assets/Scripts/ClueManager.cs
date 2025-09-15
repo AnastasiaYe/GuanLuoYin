@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
+
+
 public enum ClueSortingMethod
 {
     ByCategory,     // Sort by category (Name, Location, Object)
@@ -25,7 +27,7 @@ public class ClueManager : MonoBehaviour
     
     [Header("Color Settings")]
     public ClueCategoryColorSettings colorSettings = new ClueCategoryColorSettings();
-    
+
     // Runtime data
     private Dictionary<string, ClueData> clueDatabase = new Dictionary<string, ClueData>();
     private Dictionary<string, ClueToken> earnedClues = new Dictionary<string, ClueToken>();
@@ -33,7 +35,7 @@ public class ClueManager : MonoBehaviour
     // Events
     public System.Action<string> OnClueEarned;
     public System.Action<string> OnCluePlaced;
-    
+
     private void Start()
     {
         // Set the color settings for the static class
@@ -394,3 +396,5 @@ public class ClueManager : MonoBehaviour
     
     #endregion
 }
+
+
