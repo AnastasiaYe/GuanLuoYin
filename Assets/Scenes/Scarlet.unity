@@ -528,6 +528,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -549,6 +551,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
@@ -926,6 +929,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -947,6 +952,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
@@ -1100,6 +1106,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1121,6 +1129,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 66
@@ -1901,6 +1910,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1922,6 +1933,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
@@ -2804,7 +2816,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 802928515}
   m_HandleRect: {fileID: 802928514}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4324,7 +4336,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 174e36d31ef216946abb0335dc5e0ee4, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 174e36d31ef216946abb0335dc5e0ee4, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
@@ -5138,7 +5150,7 @@ AudioSource:
   m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 174e36d31ef216946abb0335dc5e0ee4, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 174e36d31ef216946abb0335dc5e0ee4, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
@@ -9511,6 +9523,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9532,6 +9546,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
@@ -9664,11 +9679,27 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 52e59740e772e524ca09ae250c46c667, type: 3}
     - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
       propertyPath: availableStages.Array.size
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
       propertyPath: 'availableStages.Array.data[0]'
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
+      propertyPath: 'availableStages.Array.data[1]'
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
+      propertyPath: 'availableStages.Array.data[2]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
+      propertyPath: 'availableStages.Array.data[3]'
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1391599440931337417, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
+      propertyPath: 'availableStages.Array.data[4]'
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5630226095655331005, guid: 4724b5af2ca67d543899af670faeb536, type: 3}
       propertyPath: m_Size.x
@@ -10496,6 +10527,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10517,6 +10550,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
